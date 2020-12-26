@@ -1,3 +1,5 @@
+import matplotlib.pyplot as plt
+
 uni_file = open('unicode.txt', 'r')
 uni_txt = uni_file.read()
 uni_file.close()
@@ -29,6 +31,17 @@ def to_process_dict(periodicity_dict):
         key = key[:1] + 'x' + key[1:]
         processed_periodic_dict[chr(int(key, 16))] = average 
 
+def plot_bar(periodicity_dict):
+    keys = list(periodicity_dict.keys())
+    values = list(periodicity_dict.values())
+    keys = [ hex(ord(i)).replace('x', '') for i in keys ]
+
+    fig = plt.figure()
+    ax = fig.add_axes([0, 0, 1, 1])
+    ax.bar(keys, values)
+    plt.show()
+
+
 for i, char in enumerate(uni_chars):
     if char in periodicity_found:
         pass
@@ -38,4 +51,4 @@ for i, char in enumerate(uni_chars):
         to_cal_periodicity(char, i)
 
 to_process_dict(periodicity)
-print(processed_periodic_dict)
+plot_bar(processed_periodic_dict)
