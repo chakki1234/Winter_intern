@@ -1,5 +1,5 @@
 # to read the sloka file
-sloka = open('aigiri_2.txt', 'r')
+sloka = open('aigiri.txt', 'r')
 sloka_txt = sloka.read()
 sloka.close()
 

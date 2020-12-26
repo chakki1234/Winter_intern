@@ -1,28 +1,41 @@
-unicode_txt = open('unicode.txt', 'r')
-u_txt = unicode_txt.read()
-unicode_txt.close()
+uni_file = open('unicode.txt', 'r')
+uni_txt = uni_file.read()
+uni_file.close()
 
-u_char = u_txt.split()
-checked_u_char = []
+uni_chars = uni_txt.split()
+periodicity_found = []
 periodicity = {}
+processed_periodic_dict = {}
 
-def to_cal_periodicity(i, index):
+def to_cal_periodicity(char, index):
     count = 0
-    temp = u_char[index+1:]
+    temp = uni_chars[index+1:]
     for j in temp:
-        if j == i:
-            periodicity[i].append(count)
+        if j == char:
+            periodicity[char].append(count)
             count = 0
         else:
             count = count + 1
 
+def to_process_dict(periodicity_dict):
+    dict_keys = periodicity_dict.keys()
+    
+    for key in dict_keys:
+        if len(periodicity_dict[key]) == 0:
+            average = 0
+        else:
+            average = sum(periodicity_dict[key])/len(periodicity_dict[key])
+        key = key.replace('U+', '')
+        key = key[:1] + 'x' + key[1:]
+        processed_periodic_dict[chr(int(key, 16))] = average 
 
-for j, i in enumerate(u_char):
-    if i in checked_u_char:
+for i, char in enumerate(uni_chars):
+    if char in periodicity_found:
         pass
     else:
-        checked_u_char.append(i)
-        periodicity[i] = []
-        to_cal_periodicity(i, j)
+        periodicity_found.append(char)
+        periodicity[char] = []
+        to_cal_periodicity(char, i)
 
-print(periodicity)
+to_process_dict(periodicity)
+print(processed_periodic_dict)
