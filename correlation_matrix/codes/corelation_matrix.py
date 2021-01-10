@@ -27,4 +27,4 @@ for key in correlation_dict:
 
 df = pd.DataFrame( correlation_dict )
 corrMatrix = df.corr()
-print (corrMatrix)
+corrMatrix.to_excel("corrMatrix.xlsx")

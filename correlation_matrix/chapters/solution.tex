@@ -1,0 +1,49 @@
+\renewcommand{\theequation}{\theenumi}
+\begin{enumerate}[label=\thesection.\arabic*.,ref=\thesection.\theenumi]
+\numberwithin{equation}{enumi}
+
+\item $aigiri.txt$ contains a stothram in Telugu. The file is read and the variable $stothram\_txt$ is a string which contains the stothram.
+\begin{lstlisting}[language=Python]
+stothram_file = open('aigiri.txt', 'r')
+stothram_txt = stothram_file.read()
+stothram_file.close()
+\end{lstlisting}
+
+\item $aigiri.txt$ contains 21 slokams. Each slokam is added as an element to the empty list $slokams$. Before adding to the list each slokam is processed to remove escape sequences and the character $'|'$.
+\begin{lstlisting}[language=Python]
+slokams = []
+for sloka in stothram_txt.split('||'):
+  if not sloka.replace(' ', '').isnumeric() and not sloka == '\n':
+    slokams.append( sloka.replace('|', '').replace('\n', '') )
+\end{lstlisting}
+
+\item A empty ddictonary is initilized called $correlation\_dict$. Each slokam from the list $slokams$ is split into a list of words. A for loops runs through the list of words and each character is appened to the list $temp$. A key with the slokam number is created in the $correlation_dict$ and $temp$ is intilized as its value.
+\begin{lstlisting}[language=Python]
+correlation_dict = {}
+
+for index, sloka in enumerate(slokams):
+  temp = []
+  for words in sloka.split(' '):
+    for char in words:
+      temp.append(ord(char))
+  correlation_dict[ str(index + 1) ] = np.array(temp)
+\end{lstlisting}
+
+\item The number of characters in each slokam is different. Hence the length of each list in the dictonary $correlation\_dict$ is different. To form a correlation matrix it is necessary that the length of all the lists are equal. The maximum length is found and all the list that have length less than the maximum length, $0's$ are added at the end to make it equal to the maximum length. 
+\begin{lstlisting}[language=Python]
+length = [ len(char_array) for char_array in correlation_dict.values() ]
+max_length = max(length)
+
+for key in correlation_dict:
+  correlation_dict[key] = np.pad(correlation_dict[key], (0, max_length - len(correlation_dict[key])), 'constant') 
+\end{lstlisting}
+
+\item A pandas DataFrame object is created by passing $correlation\_dict $ as an argument and an predefind method is called to produce the correlation matrix.
+\begin{lstlisting}[language=Python]
+df = pd.DataFrame( correlation_dict )
+corrMatrix = df.corr()
+print (corrMatrix)
+\end{lstlisting}
+
+
+\end{enumerate}
